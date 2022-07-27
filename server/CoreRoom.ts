@@ -155,7 +155,7 @@ export default class CoreRoom extends Room<GameState> {
       try {
         let player = this.state.players.get(client.sessionId)
         this.state.coinJars.forEach(jar => {
-          if ((player.x > jar.x - 60 && player.x < jar.x + 60) && (player.y > jar.y - 60 && player.y < jar.y + 60)) {
+          if ((player.x > jar.x - 60 && player.x < jar.x + 60) && (player.y > jar.y - 60 && player.y < jar.y + 60) && (jar.team !== player.team) && (this.state.gamemode == 'Zones')) {
             jar.capturing = true;
             setTimeout(() => {
               jar.capturing = false;
