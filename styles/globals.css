@@ -27,8 +27,7 @@ a {
 }
 
 html {
-  background: linear-gradient(rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.9)),
-    url('/assets/img/game/background-tile.png') !important;
+  background: black !important;
   overflow-x: hidden;
 }
 

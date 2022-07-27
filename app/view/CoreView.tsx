@@ -64,7 +64,7 @@ function CTCWinner(players: MapSchema<Player>) {
   } else if (blueScore > redScore) {
     winner = 'Blue'
   } else {
-    ;('Tie!')
+    ; ('Tie!')
   }
   result.push(
     <span>
@@ -109,18 +109,17 @@ export default function CoreView({
 
   if (state == null) {
     return (
-      <div style={{ textAlign: 'center' }}>
-        <br />
-        <br />
-        <br />
-        <img
-          style={{
-            textAlign: 'center',
-            height: '150px',
-            imageRendering: 'pixelated',
-          }}
-          src="/assets/img/skins/basic.png"
-        />
+      <div
+        style={{
+          color: '#f9e300',
+          fontSize: '30pt',
+          padding: '20px',
+          position: 'fixed',
+          bottom: 0,
+          left: 0,
+        }}
+      >
+        Contacting DragonDungeon Servers...
       </div>
     )
   }

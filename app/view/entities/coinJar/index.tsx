@@ -89,7 +89,7 @@ const CaptureIndicator = CustomPIXIComponent<PIXI.Graphics, IProps>(
     customDisplayObject: (_) => new PIXI.Graphics(),
     customApplyProps: (instance, oldProps, newProps) => {
       instance.clear()
-      instance.lineStyle(5, Math.floor(Math.random()*16777215))
+      instance.lineStyle(10, 0xfff9e300)
       instance.drawCircle(
         newProps.x,
         newProps.y,
