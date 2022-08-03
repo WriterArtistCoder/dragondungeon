@@ -1,15 +1,10 @@
 .pageContent {
   width: 100vw;
   height: 100vh;
-  padding: 20px;
+  padding-top: 20px;
 }
 
 .centeredContent {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  padding: 10px;
   text-align: center;
 }
 

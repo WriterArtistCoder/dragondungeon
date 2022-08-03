@@ -1,7 +1,10 @@
-import { motion } from 'framer-motion'
+import { motion, MotionStyle } from 'framer-motion'
 import styles from 'styles/menu.module.css'
 
-const PageLayout = (props): JSX.Element => {
+const PageLayout = (props: {
+    children: any,
+    style?: MotionStyle
+}): JSX.Element => {
     return <motion.main
         variants={{
             hidden: { opacity: 0, x: 0, y: 0 },
@@ -13,6 +16,7 @@ const PageLayout = (props): JSX.Element => {
         exit="exit"
         transition={{ type: 'linear' }}
         className={styles.pageContent}
+        style={props.style || {}}
     >
         {props.children}
     </motion.main>
