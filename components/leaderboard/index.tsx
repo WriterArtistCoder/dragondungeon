@@ -29,13 +29,13 @@ function renderTableData(players: MapSchema<Player>) {
     let name = player.onlineName
     const ballType = player.ballType
     leaderboardData.push(
-      <span>
+      <div style={{ padding: '10px' }}>
         &nbsp;&nbsp;&nbsp;
-        {/* <img src={`/assets/img/abilities/${ballType}ball.png`} style={{ height: '40px', verticalAlign: 'bottom' }} /> */}
+        <img src={`/assets/img/abilities/${ballType}ball.png`} style={{ height: '40px', verticalAlign: 'bottom' }} />
         &nbsp;&nbsp;
         <span>{name}</span>&nbsp;&nbsp;
         <b>{score}</b>&nbsp;&nbsp;&nbsp;
-      </span>,
+      </div>,
     )
   })
   return leaderboardData
@@ -138,7 +138,7 @@ export function Leaderboard(props: {
         }}>{renderZonesLeaderboard(coinJars)}</div>}
         <div className={styles.leaderboardContainer}>
           <table>
-            <tbody id="leaderboard">{renderTableData(props.players)}</tbody>
+            <tbody id="leaderboard" style={{ textAlign: 'left' }}>{renderTableData(props.players)}</tbody>
           </table>
         </div>
       </>

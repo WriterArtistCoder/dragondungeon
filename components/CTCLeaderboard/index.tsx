@@ -24,24 +24,6 @@ function renderTableData(players: MapSchema<Player>) {
   return <span key = {v4()}> {redScore} | {blueScore} </span>
 }
 
-function renderMobileTableData(players: MapSchema<Player>) {
-  let leaderboardData = []
-  players.forEach((player: Player, key: any) => {
-    const score = player.score
-    let name = player.onlineName
-    const ballType = player.ballType
-    leaderboardData.push(
-      <span key={key} style={{ color: 'white' }}>
-        <span className="playerData">{name}</span>&nbsp;&nbsp;
-        <b className="playerData" style={{ fontSize: '25px'}}>
-          {score}
-        </b>
-      </span>,
-    )
-  })
-  return leaderboardData
-}
-
 export function CTCLeaderboard(props: {
   players: MapSchema<Player>
 }) {
@@ -50,27 +32,11 @@ export function CTCLeaderboard(props: {
   return (
     <>
       <p className={styles.mobileCountdown}></p>
-      {window.innerWidth >= 1000 && (
-        <>
-          <div id="captions" style={{ position: 'fixed', color: '#f9e300' }}></div>
-          <div id="chatlog" className={styles.CTCboard}></div>
-          <div className={styles.CTCboard}>
-            {renderTableData(props.players)}
-            
-          </div>
-        </>
-      )}
-
-      {window.innerWidth <= 1000 && (
-        <>
-          <div
-            id="chatlog"
-            className={styles.chatlog}
-            style={{ display: 'none' }}
-          ></div>
-          <Box>{renderMobileTableData(players)}</Box>
-        </>
-      )}
+      <div id="captions" style={{ position: 'fixed', color: '#f9e300' }}></div>
+      <div id="chatlog" className={styles.CTCboard}></div>
+      <div className={styles.CTCboard}>
+        {renderTableData(props.players)}
+      </div>
     </>
   )
 }
