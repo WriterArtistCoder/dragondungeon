@@ -52,7 +52,7 @@ export default function Profile(props) {
           padding: '20px',
           width: '130px',
           background: 'black',
-          cursor: 'pointer'
+          cursor: 'pointer',
         }}
         onClick={async () => {
           if (props.type == 'ability') {
@@ -74,7 +74,7 @@ export default function Profile(props) {
               setEquippedMod(props.id)
             }
           } else if (props.type == 'trait') {
-            return;
+            return
           } else {
             let equipRequest = await fetch(
               `${window.location.protocol}//${window.location.hostname}:1337/equip/${props.id}?user=${props.token}`,
@@ -89,31 +89,56 @@ export default function Profile(props) {
           }
         }}
       >
-        {props.type == 'trait' && <><span style={{ color: 'lime' }}>Intrinsic</span><br /><br /></>}
-        {props.type == 'mod' && <><span style={{ color: 'lightgreen' }}>Mod</span><br /><br /></>}
-        {props.img && <><img
-          src={props.img}
-          alt={props.name}
-          style={{
-            imageRendering: 'pixelated',
-            height: '60px',
-            verticalAlign: 'middle',
-          }}
-        /><br />
-          <br /></>}
+        {props.type == 'trait' && (
+          <>
+            <span style={{ color: 'lime' }}>Intrinsic</span>
+            <br />
+            <br />
+          </>
+        )}
+        {props.type == 'mod' && (
+          <>
+            <span style={{ color: 'lightgreen' }}>Mod</span>
+            <br />
+            <br />
+          </>
+        )}
+        {props.img && (
+          <>
+            <img
+              src={props.img}
+              alt={props.name}
+              style={{
+                imageRendering: 'pixelated',
+                height: '60px',
+                verticalAlign: 'middle',
+              }}
+            />
+            <br />
+            <br />
+          </>
+        )}
         <b style={{ fontSize: '15pt' }}>{props.name}</b>
         <br />
         <i style={{ fontSize: '10pt' }}>{props.description}</i>
         <br />
         <span style={{ fontSize: '12pt', color: '#f9e300' }}>{props.perk}</span>
         <br />
-        {(!props.owned && props.type == 'skin') && <span style={{ fontSize: '12pt', color: '#e100ff' }}>Buy for {props.cost} gems</span>}
+        {!props.owned && props.type == 'skin' && (
+          <span style={{ fontSize: '12pt', color: '#e100ff' }}>
+            Buy for {props.cost} gems
+          </span>
+        )}
       </div>
     )
   }
 
   useMemo(async () => {
-    let currentLoadout = await (await fetch(`${window.location.protocol}//${window.location.hostname}:1337/loadout?user=${props.user.token}`)).json()
+    let currentLoadout = await (
+      await fetch(
+        `${window.location.protocol}//${window.location.hostname}:1337/loadout?user=${props.user.token}`,
+      )
+    ).json()
     setToken(props.user.token)
     setEquippedSkin(currentLoadout.skin || 0)
     setEquippedAbility(currentLoadout.ability || 'Fireball')
@@ -196,23 +221,32 @@ export default function Profile(props) {
           gap: '5px',
         }}
       >
-        {equippedAbility == 'Fireball' && <>
-          <ProfileSelectItem
-            type="trait"
-            token={token}
-            equipped={true}
-            name="Great Balls o' Fire"
-            perk="Fireballs have greatly increased range and speed."
-          />
-          <ProfileSelectItem
-            type="mod"
-            token={token}
-            equipped={equippedMod == 101}
-            id={101}
-            name="Cloak of Invisibility"
-            perk="You are invisible while dodging."
-          />
-          {/* <ProfileSelectItem
+        {equippedAbility == 'Fireball' && (
+          <>
+            <ProfileSelectItem
+              type="trait"
+              token={token}
+              equipped={true}
+              name="Great Balls o' Fire"
+              perk="Fireballs have greatly increased range and speed."
+            />
+            <ProfileSelectItem
+              type="mod"
+              token={token}
+              equipped={equippedMod == 101}
+              id={101}
+              name="Cloak of Invisibility"
+              perk="You are invisible while dodging."
+            />
+            <ProfileSelectItem
+              type="mod"
+              token={token}
+              equipped={equippedMod === 102}
+              id={102}
+              name="Health Boost"
+              perk="You have a chance to gain health when dodging."
+            />
+            {/* <ProfileSelectItem
             type="mod"
             token={token}
             equipped={equippedMod == 101}
@@ -228,16 +262,18 @@ export default function Profile(props) {
             name="En Garde"
             perk="In Zones mode, Fireballs shot near your Zones deal extra damage."
           /> */}
-        </>}
-        {equippedAbility == 'Iceball' && <>
-          <ProfileSelectItem
-            type="trait"
-            token={token}
-            equipped={true}
-            name="Citizen's Arrest"
-            perk="Temporarily stuns your foes, confusing them."
-          />
-          {/* <ProfileSelectItem
+          </>
+        )}
+        {equippedAbility == 'Iceball' && (
+          <>
+            <ProfileSelectItem
+              type="trait"
+              token={token}
+              equipped={true}
+              name="Citizen's Arrest"
+              perk="Temporarily stuns your foes, confusing them."
+            />
+            {/* <ProfileSelectItem
             type="mod"
             token={token}
             equipped={equippedMod == 200}
@@ -245,16 +281,18 @@ export default function Profile(props) {
             name="Great Balls o' Fire"
             perk="Fireballs have greatly increased range and speed."
           /> */}
-        </>}
-        {equippedAbility == 'Electricball' && <>
-          <ProfileSelectItem
-            type="trait"
-            token={token}
-            equipped={true}
-            name="Replication"
-            perk="Fireballs have a random chance of replication after damaging a foe."
-          />
-          {/* <ProfileSelectItem
+          </>
+        )}
+        {equippedAbility == 'Electricball' && (
+          <>
+            <ProfileSelectItem
+              type="trait"
+              token={token}
+              equipped={true}
+              name="Replication"
+              perk="Fireballs have a random chance of replication after damaging a foe."
+            />
+            {/* <ProfileSelectItem
             type="mod"
             token={token}
             equipped={equippedMod == 300}
@@ -262,16 +300,18 @@ export default function Profile(props) {
             name="Great Balls o' Fire"
             perk="Fireballs have greatly increased range and speed."
           /> */}
-        </>}
-        {equippedAbility == 'Mudball' && <>
-          <ProfileSelectItem
-            type="trait"
-            token={token}
-            equipped={true}
-            name="Consistent Growth"
-            perk="Fireballs grow larger over time, especially after damaging foes."
-          />
-          {/* <ProfileSelectItem
+          </>
+        )}
+        {equippedAbility == 'Mudball' && (
+          <>
+            <ProfileSelectItem
+              type="trait"
+              token={token}
+              equipped={true}
+              name="Consistent Growth"
+              perk="Fireballs grow larger over time, especially after damaging foes."
+            />
+            {/* <ProfileSelectItem
             type="mod"
             token={token}
             equipped={equippedMod == 400}
@@ -279,16 +319,18 @@ export default function Profile(props) {
             name="Great Balls o' Fire"
             perk="Fireballs have greatly increased range and speed."
           /> */}
-        </>}
-        {equippedAbility == 'Poisonball' && <>
-          <ProfileSelectItem
-            type="trait"
-            token={token}
-            equipped={true}
-            name="Stolen Treasure"
-            perk="Damaged foes begin leaking coins, allowing you to plunder their treasures."
-          />
-          {/* <ProfileSelectItem
+          </>
+        )}
+        {equippedAbility == 'Poisonball' && (
+          <>
+            <ProfileSelectItem
+              type="trait"
+              token={token}
+              equipped={true}
+              name="Stolen Treasure"
+              perk="Damaged foes begin leaking coins, allowing you to plunder their treasures."
+            />
+            {/* <ProfileSelectItem
             type="mod"
             token={token}
             equipped={equippedMod == 500}
@@ -296,7 +338,8 @@ export default function Profile(props) {
             name="Great Balls o' Fire"
             perk="Fireballs have greatly increased range and speed."
           /> */}
-        </>}
+          </>
+        )}
       </div>
       <br />
       <h2>Appearance</h2>
