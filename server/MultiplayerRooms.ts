@@ -2,6 +2,7 @@ import { Countdown, GameState, CoinJar, Player, Wall } from '../common'
 import CoreRoom from './CoreRoom'
 import { v4 } from 'uuid'
 import { Client } from 'colyseus'
+import { calculateAngle } from '../common/maths'
 
 let botNames = require('./botnames.json')
 
@@ -309,11 +310,25 @@ export class ZonesRoom extends CoreRoom {
     let state = new GameState()
     state.gamemode = 'Zones'
     state.countdown.minutes = 4
-    state.coinJars.set(v4(), new CoinJar(200, 1500, 0))
     state.coinJars.set(v4(), new CoinJar(600, 700, 0))
     state.coinJars.set(v4(), new CoinJar(1000, 2800, 0))
     state.coinJars.set(v4(), new CoinJar(1400, 2540, 0))
     state.coinJars.set(v4(), new CoinJar(1800, 1230, 0))
+
+    const botPlayerA = new Player('ice', 0, 0)
+    botPlayerA.onlineName =
+      botNames[Math.floor(Math.random() * botNames.length)]
+    botPlayerA.isBot = true
+    botPlayerA.team = 1
+    state.players.set(v4(), botPlayerA)
+
+    // const botPlayerB = new Player('poison', 0, 0)
+    // botPlayerB.onlineName =
+    //   botNames[Math.floor(Math.random() * botNames.length)]
+    // botPlayerB.isBot = true
+    // botPlayerB.team = 2
+    // state.players.set(v4(), botPlayerB)
+
     super(state)
   }
 
@@ -335,6 +350,34 @@ export class ZonesRoom extends CoreRoom {
     ) {
       super.spawnCoin()
     }
+    this.state.players.forEach((player) => {
+      if (player.isBot) {
+        const coinjars = Array.from(this.state.coinJars.values()).filter(
+          (coinjar) => coinjar.team !== player.team,
+        )
+        const distance = 500
+        const coinjar = coinjars.find((jar) => {
+          const dx = jar.x - player.x
+          const dy = jar.y - player.y
+          return dx * dx + dy * dy < distance * distance
+        })
+
+        if (coinjar) {
+          const direction = calculateAngle(
+            player.x,
+            player.y,
+            coinjar.x,
+            coinjar.y,
+          )
+          player.angle = direction
+          player.activeInputs.angle = player.angle
+          player.inputs(player.activeInputs)
+          this.captureCoinJar(player)
+        } else {
+          this.moveBot(player)
+        }
+      }
+    })
   }
 }
 
