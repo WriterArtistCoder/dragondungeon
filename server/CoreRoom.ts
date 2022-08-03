@@ -1,9 +1,6 @@
 import { Room, Client } from 'colyseus'
 
-import {
-  getUserDetails,
-  getUserDragon
-} from './data'
+import { getUserDetails, getUserDragon } from './data'
 
 import {
   GameState,
@@ -84,7 +81,7 @@ export default class CoreRoom extends Room<GameState> {
       } else {
         dragonSkin = 0
       }
-    } catch { }
+    } catch {}
 
     var teamnum
     var xPos
@@ -113,7 +110,7 @@ export default class CoreRoom extends Room<GameState> {
 
     let match = false
 
-    this.state.players.forEach(player => {
+    this.state.players.forEach((player) => {
       if (player.onlineID == userData.uid) {
         this.state.players.delete(player.colyseusClient.id)
         match = true
@@ -141,35 +138,60 @@ export default class CoreRoom extends Room<GameState> {
     this.state.players[client.id].mod = mod
 
     if (userData.name == null) {
-      this.state.players[client.id].onlineName = `Dragon${Math.floor(Math.random() * 10)}${Math.floor(Math.random() * 10)}${Math.floor(Math.random() * 10)}${Math.floor(Math.random() * 10)}`
+      this.state.players[client.id].onlineName = `Dragon${Math.floor(
+        Math.random() * 10,
+      )}${Math.floor(Math.random() * 10)}${Math.floor(
+        Math.random() * 10,
+      )}${Math.floor(Math.random() * 10)}`
     } else {
       this.state.players[client.id].onlineName = userData.name
     }
     this.state.players[client.id].onlineID = userData.uid
   }
 
-  onLeave(client: Client, _consent: boolean) { }
+  onLeave(client: Client, _consent: boolean) {}
 
   registerMessages() {
     this.onMessage('input', (client: Client, message: IInputs) => {
-      try {
-        let player = this.state.players.get(client.sessionId)
-        this.state.coinJars.forEach(jar => {
-          if ((player.x > jar.x - 60 && player.x < jar.x + 60) && (player.y > jar.y - 60 && player.y < jar.y + 60) && (jar.team !== player.team) && (this.state.gamemode == 'Zones')) {
-            jar.capturing = true;
-            setTimeout(() => {
-              jar.capturing = false;
-              if ((player.x > jar.x - 60 && player.x < jar.x + 60) && (player.y > jar.y - 60 && player.y < jar.y + 60)) {
-                jar.team = player.team
-                this.broadcast('chatlog', `${player.onlineName} captured a zone for ${player.team == 1 ? 'Red' : 'Blue'} team!`)
-                player.colyseusClient.send('sfx', '/assets/audio/captured.m4a')
-              }
-            }, 2000)
-          }
-        })
-        this.state.players[client.sessionId].inputs(message)
-      } catch { }
+      this.captureCoinJar(this.state.players[client.sessionId], message)
     })
+  }
+
+  captureCoinJar(player: Player, message?: IInputs) {
+    try {
+      this.state.coinJars.forEach((jar) => {
+        if (
+          player.x > jar.x - 60 &&
+          player.x < jar.x + 60 &&
+          player.y > jar.y - 60 &&
+          player.y < jar.y + 60 &&
+          jar.team !== player.team &&
+          this.state.gamemode == 'Zones'
+        ) {
+          jar.capturing = true
+          setTimeout(() => {
+            jar.capturing = false
+            if (
+              player.x > jar.x - 60 &&
+              player.x < jar.x + 60 &&
+              player.y > jar.y - 60 &&
+              player.y < jar.y + 60
+            ) {
+              jar.team = player.team
+              this.broadcast(
+                'chatlog',
+                `${player.onlineName} captured a zone for ${
+                  player.team == 1 ? 'Red' : 'Blue'
+                } team!`,
+              )
+              if (player.colyseusClient)
+                player.colyseusClient.send('sfx', '/assets/audio/captured.m4a')
+            }
+          }, 2000)
+        }
+      })
+      if (message) player.inputs(message)
+    } catch {}
   }
 
   startGameLoop() {
@@ -195,28 +217,32 @@ export default class CoreRoom extends Room<GameState> {
 
   moveBots() {
     this.state.players.forEach((player: Player) => {
-      const coinJarCoordinates = { x: 1500, y: 1500 }
       if (!player.isBot) return
-      if (
-        player.coins >= 10 &&
-        ((player.x > coinJarCoordinates.x - 50 &&
-          player.x < coinJarCoordinates.x + 50) ||
-          (player.y > coinJarCoordinates.y - 50 &&
-            player.y < coinJarCoordinates.y + 50))
-      ) {
-        player.angle = calculateAngle(
-          player.x,
-          player.y,
-          coinJarCoordinates.x,
-          coinJarCoordinates.y,
-        )
-        player.activeInputs.angle = player.angle
-      } else if (Math.random() > 0.95) {
-        player.angle = Math.random() * 360
-        player.activeInputs.angle = Math.random() * 360
-      }
-      player.inputs(player.activeInputs)
+      this.moveBot(player)
     })
+  }
+
+  moveBot(player: Player) {
+    const coinJarCoordinates = { x: 1500, y: 1500 }
+    if (
+      player.coins >= 10 &&
+      ((player.x > coinJarCoordinates.x - 50 &&
+        player.x < coinJarCoordinates.x + 50) ||
+        (player.y > coinJarCoordinates.y - 50 &&
+          player.y < coinJarCoordinates.y + 50))
+    ) {
+      player.angle = calculateAngle(
+        player.x,
+        player.y,
+        coinJarCoordinates.x,
+        coinJarCoordinates.y,
+      )
+      player.activeInputs.angle = player.angle
+    } else if (Math.random() > 0.95) {
+      player.angle = Math.random() * 360
+      player.activeInputs.angle = Math.random() * 360
+    }
+    player.inputs(player.activeInputs)
   }
 
   spawnCoin() {
@@ -283,13 +309,13 @@ export default class CoreRoom extends Room<GameState> {
       )
       const speedX = Maths.round2Digits(
         player.direction.x *
-        (((player.speed + player.coins) * (1 / player.deceleration) * ticks) /
-          magnitude),
+          (((player.speed + player.coins) * (1 / player.deceleration) * ticks) /
+            magnitude),
       )
       const speedY = Maths.round2Digits(
         player.direction.y *
-        (((player.speed + player.coins) * (1 / player.deceleration) * ticks) /
-          magnitude),
+          (((player.speed + player.coins) * (1 / player.deceleration) * ticks) /
+            magnitude),
       )
       const newX = player.x + speedX
       const newY = player.y + speedY
@@ -440,11 +466,17 @@ export default class CoreRoom extends Room<GameState> {
 
                 if (!this.firstBlood) {
                   this.firstBlood = true
-                  playerHit.colyseusClient.send('sfx', '/assets/audio/firstblood.m4a')
+                  playerHit.colyseusClient.send(
+                    'sfx',
+                    '/assets/audio/firstblood.m4a',
+                  )
                 } else {
-                  playerHit.colyseusClient.send('sfx', '/assets/audio/amazing.m4a')
+                  playerHit.colyseusClient.send(
+                    'sfx',
+                    '/assets/audio/amazing.m4a',
+                  )
                 }
-              } catch { }
+              } catch {}
             }
 
             const coinChance = 0.2 // the possibility of removing a coin on collision with a fireball, this is done to spread out the coins more
@@ -475,7 +507,7 @@ export default class CoreRoom extends Room<GameState> {
                   this.createCoin(player.x, player.y)
                 }
               }
-            } catch { }
+            } catch {}
 
             if (fireBall.type === 'electric') {
               if (playerHit.fireballs.length < 10) {
@@ -539,7 +571,7 @@ export default class CoreRoom extends Room<GameState> {
                 'chatlog',
                 `${this.state.players[id].onlineName} <img src='/assets/img/game/coinJar.png' height='20px' height='20px' style='image-rendering:pixelated' /> ${this.state.players[id].coins}`,
               )
-            } catch { }
+            } catch {}
           }
           this.state.players[id].coins = 0 // remove coins
         }
@@ -547,7 +579,8 @@ export default class CoreRoom extends Room<GameState> {
 
       for (let cid of this.state.coins.keys()) {
         if (
-          (this.state.players[id].team == this.state.coins[cid].team || this.state.coins[cid].team == 0) &&
+          (this.state.players[id].team == this.state.coins[cid].team ||
+            this.state.coins[cid].team == 0) &&
           this.state.coins[cid].checkHit(
             this.state.players[id].x,
             this.state.players[id].y,
@@ -560,7 +593,7 @@ export default class CoreRoom extends Room<GameState> {
           var coins = this.state.players[id].coins
           try {
             player.colyseusClient.send('sfx', '/assets/audio/coin.wav')
-          } catch { }
+          } catch {}
           switch (this.state.coins[cid].getSize()) {
             case 20:
               coins++
@@ -583,7 +616,7 @@ export default class CoreRoom extends Room<GameState> {
                 'chatlog',
                 '<img src="/assets/img/game/icon.png" width="20px" height="20px" /> out of space',
               )
-            } catch { }
+            } catch {}
           }
           player.coinsPickedUp += Math.min(coins, 10) - player.coins
           player.coins = Math.min(coins, 10)
