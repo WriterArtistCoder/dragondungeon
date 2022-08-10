@@ -57,6 +57,9 @@ export class Player extends Schema {
   isBot!: boolean
 
   @type('boolean')
+  isNPC!: boolean
+
+  @type('boolean')
   autoshootOn: boolean = true
 
   @type('boolean')

@@ -10,7 +10,6 @@ import { Bat } from './Bat'
 import { Skull } from './Skull'
 import { Wall } from './Wall'
 import gameConfig from '../config/dragondungeon.config'
-import { NPCSprite } from './NPCSprite'
 
 export class GameState extends Schema {
   @type('boolean')
@@ -24,8 +23,8 @@ export class GameState extends Schema {
   @type({ map: Coin })
   coins = new MapSchema<Coin>()
 
-  @type({ map: NPCSprite })
-  npcs = new MapSchema<NPCSprite>()
+  @type({ map: Player })
+  npcs = new MapSchema<Player>()
 
   @type({ map: BorderFence })
   fences = new MapSchema<BorderFence>()

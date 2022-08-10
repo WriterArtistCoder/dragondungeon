@@ -174,36 +174,39 @@ export class GameView extends Component<GameViewProps, GameViewState> {
     const me = this.props.state.players[id]
 
     if (this.props.state.npcs) {
-      this.props.state.npcs.forEach(npc => {
+      this.props.state.npcs.forEach((player) => {
         dragons.push(
           <Dragon
-            player={npc}
-            key={v4()}
-            team={0}
-            skin={0}
-            celebration={true}
-            isGhost={false}
+            player={player}
+            key={player.onlineID}
+            team={player.team}
+            skin={player.skinType}
+            celebration={player.turboMode}
+            isGhost={player.isGhost}
             isMe={true}
-            turbo={false}
+            turbo={player.turboMode}
           />,
         )
-        const BetterBar = Bar as any
-        hudBars.push(
-          <BetterBar
-            key={v4()}
-            health={npc.health}
-            x={npc.x - 35}
-            y={npc.y - 80}
-            width={70}
-            team={0}
-            height={18}
-            color={0xe30b1d}
-            coins={npc.coins}
-            name={'Dragon'}
-            turbo={false}
-            nullAndVoid={false}
-          />,
-        )
+
+        if (window.localStorage.ddImmersiveMode != 'true') {
+          const BetterBar = Bar as any
+          hudBars.push(
+            <BetterBar
+              key={v4()}
+              health={player.health}
+              x={player.x - 35}
+              y={player.y - 80}
+              width={70}
+              team={player.team}
+              height={18}
+              color={0xe30b1d}
+              coins={player.coins}
+              name={player.onlineName}
+              turbo={player.turboMode}
+              nullAndVoid={player.mod === 101}
+            />,
+          )
+        }
       })
     }
 
@@ -372,6 +375,8 @@ export class GameView extends Component<GameViewProps, GameViewState> {
         <CoinJar x={coinJar.x} y={coinJar.y} key={v4()} team={coinJar.team} capturing={coinJar.capturing} />,
       )
     })
+
+    console.log(dragons)
 
     render(
       <>
