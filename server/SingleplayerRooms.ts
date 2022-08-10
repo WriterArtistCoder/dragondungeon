@@ -2,12 +2,15 @@ import { Client } from 'colyseus'
 import { CoinJar, GameState, IInputs, Player } from '../common'
 import CoreRoom from './CoreRoom'
 import { v4 } from 'uuid'
-import { NPCSprite } from '../common/NPCSprite'
 
 export class CampaignBetaRoom extends CoreRoom {
     constructor() {
         let state = new GameState()
-        state.npcs.set(v4(), new NPCSprite(200, 200))
+        for (let i = 0; i < 100; i++) {
+            let genNPC = new Player("fire", Math.floor(Math.random() * 2000), Math.floor(Math.random() * 2000))
+            genNPC.isNPC = true;
+            state.players.set(v4(), genNPC)
+        }
         super(state)
     }
 

@@ -351,7 +351,7 @@ export class ZonesRoom extends CoreRoom {
       super.spawnCoin()
     }
     this.state.players.forEach((player) => {
-      if (player.isBot) {
+      if (player.isBot || player.isNPC) {
         const coinjars = Array.from(this.state.coinJars.values()).filter(
           (coinjar) => coinjar.team !== player.team,
         )

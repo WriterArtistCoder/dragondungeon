@@ -217,7 +217,7 @@ export default class CoreRoom extends Room<GameState> {
 
   moveBots() {
     this.state.players.forEach((player: Player) => {
-      if (!player.isBot) return
+      if (!player.isBot || !player.isNPC) return
       this.moveBot(player)
     })
   }
