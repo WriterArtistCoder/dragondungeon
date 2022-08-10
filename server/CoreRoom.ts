@@ -425,13 +425,14 @@ export default class CoreRoom extends Room<GameState> {
       this.movePlayer(this.state.players[id], dx / 50)
       this.moveFireballs(this.state.players[id], dx / 50)
 
-      let player = this.state.players[id]
+      let player: Player = this.state.players[id]
       let playerId = id
 
       player.tick(dx)
 
       this.state.players.forEach((playerHit, playerHitId) => {
         for (let i = 0; i < playerHit.fireballs.length; i++) {
+          let firstCall = true
           const fireBall = playerHit.fireballs[i]
           if (playerId == playerHitId) return
           if (
@@ -441,6 +442,16 @@ export default class CoreRoom extends Room<GameState> {
             if (player.isGhost == false) {
               player.hitsRecived++
               player.health -= 0.2
+              if (playerHit.mod === 104 && playerHit.health > 9.5) {
+                player.health -= 0.1
+              }
+              if (firstCall && player.mod === 103) {
+                player.speed = 75
+                setTimeout(() => {
+                  player.speed = 25
+                }, 2000)
+              }
+              firstCall = false
             }
             if (player.health < 0) {
               player.health = 10

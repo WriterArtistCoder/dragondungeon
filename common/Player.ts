@@ -125,7 +125,7 @@ export class Player extends Schema {
       this.turboModeAllowed = false
       this.turboMode = true
       this.speed = 200
-      if (this.mod === 102 && Math.random() < 0.25) {
+      if (this.mod === 102 && Math.random() < 0.33) {
         if (this.health < 8) {
           this.health += 2
         } else {

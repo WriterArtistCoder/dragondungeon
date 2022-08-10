@@ -171,7 +171,8 @@ export default function Profile(props) {
       <div
         style={{
           display: 'grid',
-          gridTemplateColumns: 'minmax(0,1fr) minmax(0,1fr) minmax(0,1fr) minmax(0,1fr) minmax(0,1fr)',
+          gridTemplateColumns:
+            'minmax(0,1fr) minmax(0,1fr) minmax(0,1fr) minmax(0,1fr) minmax(0,1fr)',
           gap: '3px',
         }}
       >
@@ -245,6 +246,22 @@ export default function Profile(props) {
               id={102}
               name="Health Boost"
               perk="You have a chance to gain health when dodging."
+            />
+            <ProfileSelectItem
+              type="mod"
+              token={token}
+              equipped={equippedMod === 103}
+              id={103}
+              name="Rush"
+              perk="Whenever you take damage, you gain speed for 2 seconds."
+            />
+            <ProfileSelectItem
+              type="mod"
+              token={token}
+              equipped={equippedMod === 104}
+              id={104}
+              name="Ambush"
+              perk="Whenever you are at full health, you deal extra damage."
             />
             {/* <ProfileSelectItem
             type="mod"
