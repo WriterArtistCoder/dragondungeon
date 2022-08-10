@@ -79,11 +79,25 @@ export default function Profile(props) {
             let equipRequest = await fetch(
               `${window.location.protocol}//${window.location.hostname}:1337/equip/${props.id}?user=${props.token}`,
             )
-            console.log(equipRequest)
-            if (equipRequest.status !== 200) {
+            if(equipRequest.status == 402) {
+              let playerGems = ((await equipRequest.text()).replace('playerHasGems', '') as any ) || 0;
+              alert(`You need to buy this skin first for ${props.cost} gems. You have ${playerGems} gems.`)
+              if (playerGems >= props.cost) {
+                if(confirm(`Do you want to buy ${props.name} for ${props.cost} gems? After buying it, you'll have ${playerGems - props.cost} gems left over.`)) {
+                  let purchaseRequest = await fetch(
+                    `${window.location.protocol}//${window.location.hostname}:1337/purchase/${props.id}?user=${props.token}`,
+                  )
+                  if(purchaseRequest.ok) {
+                    alert(`You're good to go! You can equip the ${props.name} skin now. Hope you love it!`)
+                    window.location.reload()
+                  } else {
+                    alert("There was a glitch. Please reload and try again.")
+                  }
+                }
+              }
+            } else if (equipRequest.status !== 200) {
               alert('There was an issue equipping this skin.')
             } else {
-              console.log('equipped ' + props.id)
               setEquippedSkin(props.id)
             }
           }

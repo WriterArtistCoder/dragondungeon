@@ -89,8 +89,8 @@ export async function equipItem(req, res) {
                 res.status(200)
                 res.send('Success')
             } else {
-                res.status(400)
-                res.send('Skin is not in user entitlements')
+                res.status(402)
+                res.send("playerHasGems" + userEntitlements.gems)
             }
         }
     } catch {
@@ -102,8 +102,7 @@ export async function equipItem(req, res) {
 export async function purchaseItem(req, res) {
     try {
         let userClaims = await getUserDetails(req.query.user as string)
-        let playerEntitlementsDoc = await getUserEntitlements(userClaims.uid)
-        let playerEntitlements = playerEntitlementsDoc.data()
+        let playerEntitlements = await getUserEntitlements(userClaims.uid)
 
         let skinList = require('../public/api/skins.json')
         skinList.forEach(async (skin) => {

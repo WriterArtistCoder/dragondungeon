@@ -83,7 +83,7 @@ export default function DragonDungeon({ Component, pageProps }) {
                 router.pathname != '/' && (
                   <div className={styles.nav}>
                     <span
-                      style={{ cursor: 'pointer', fontSize: '20pt' }}
+                      style={{ cursor: 'pointer', fontSize: '20pt', position: 'fixed', top: '20px', right: '20px', color: 'white' }}
                       onClick={() => router.push('/')}
                     >
                       &larr;
